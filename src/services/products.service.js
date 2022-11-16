@@ -12,10 +12,10 @@ const findProductById = async (productId) => {
 };
 
 const insertProduct = async (product) => {
-  await productsModel.insertProduct(product);
-  const newProduct = await productsModel.productInserted();
+  const insert = await productsModel.insertProduct(product);
+  const newProduct = await productsModel.findProductById(insert.insertId);
 
-  return { type: null, message: newProduct[0] };
+  return { type: null, message: newProduct };
 };
 
 const updateById = async (id, update) => {

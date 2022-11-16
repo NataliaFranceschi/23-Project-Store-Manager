@@ -16,15 +16,9 @@ const findProductById = async (productId) => {
 };
 
 const insertProduct = async ({ name }) => {
-  await connection.execute(
+  const [result] = await connection.execute(
     'INSERT INTO products (name) VALUES (?)',
     [name],
-  );
-};
-
-const productInserted = async () => {
-  const [result] = await connection.execute(
-    'SELECT * FROM products ORDER BY id DESC LIMIT 1',
   );
   return result;
 };
@@ -49,7 +43,6 @@ module.exports = {
   findAllProducts,
   findProductById,
   insertProduct,
-  productInserted,
   updateById,
   deleteById,
 };
