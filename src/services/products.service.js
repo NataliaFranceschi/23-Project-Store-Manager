@@ -32,10 +32,16 @@ const deleteById = async (id) => {
   return { type: null, message: '' };
 };
 
+const searchProducts = async (q) => {
+  const products = await productsModel.searchProducts(q);
+  return { type: null, message: products };
+};
+
 module.exports = {
   findAllProducts,
   findProductById,
   insertProduct,
   updateById,
   deleteById,
+  searchProducts,
 };
