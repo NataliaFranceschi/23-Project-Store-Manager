@@ -1,4 +1,5 @@
 const salesModel = require('../models/sales.model');
+const productsModel = require('../models/products.model');
 
 const findAllSales = async () => {
   const sales = await salesModel.findAllSales();
@@ -11,14 +12,21 @@ const findSaleById = async (saleId) => {
   return { type: null, message: sale };
 };
 
-/* const insertProduct = async (product) => {
-  await productsModel.insertProduct(product);
-  const newProduct = await productsModel.productInserted();
+const insertSale = async (sales) => {
+  const findProduct = await Promise.all(sales
+    .map(async (saleInfo) => productsModel.findProductById(saleInfo.productId)));
+  const hasProduct = await findProduct.every((product) => typeof product === 'object');
+  if (!hasProduct) return { type: 404, message: 'Product not found' }; 
 
-  return { type: null, message: newProduct[0] };
-}; */
+  const sale = await salesModel.insertSale();
+  const id = sale.insertId;
+  await Promise.all(sales
+    .map(async (saleInfo) => salesModel.insertSaleInformation({ saleId: id, ...saleInfo })));
+  return { type: null, message: { id, itemsSold: sales } };
+}; 
 
 module.exports = {
   findAllSales,
   findSaleById,
+  insertSale,
 };
