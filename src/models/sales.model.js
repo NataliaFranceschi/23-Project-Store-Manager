@@ -42,12 +42,10 @@ const insertSaleInformation = async (sale) => {
     .map((_key) => '?')
     .join(', ');
 
-  const [{ insertId }] = await connection.execute(
+  await connection.execute(
     `INSERT INTO sales_products (${columns}) VALUE (${placeholders})`,
     [...Object.values(sale)],
   );
-
-  return insertId;
 };
 
 const deleteById = async (id) => {
@@ -62,10 +60,18 @@ const deleteById = async (id) => {
   return result;
 };
 
+const updateById = async (id, { productId, quantity }) => {
+  await connection.execute(
+    'UPDATE sales_products SET quantity = (?) WHERE sale_id = (?) AND product_id = (?)',
+    [quantity, id, productId],
+  );
+}; 
+
 module.exports = {
   findAllSales,
   findSaleById,
   insertSale,
   insertSaleInformation,
   deleteById,
+  updateById,
 };

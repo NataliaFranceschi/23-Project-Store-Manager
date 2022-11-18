@@ -12,12 +12,15 @@ const findSaleById = async (saleId) => {
   return { type: null, message: sale };
 };
 
-const insertSale = async (sales) => {
+const validateProductId = async (sales) => {
   const findProduct = await Promise.all(sales
     .map(async (saleInfo) => productsModel.findProductById(saleInfo.productId)));
-  const hasProduct = await findProduct.every((product) => typeof product === 'object');
-  if (!hasProduct) return { type: 404, message: 'Product not found' }; 
-
+  return findProduct.every((product) => typeof product === 'object');
+};
+  
+const insertSale = async (sales) => {
+  if (!await validateProductId(sales)) return { type: 404, message: 'Product not found' };
+  
   const sale = await salesModel.insertSale();
   const id = sale.insertId;
   await Promise.all(sales
@@ -28,12 +31,24 @@ const insertSale = async (sales) => {
 const deleteById = async (id) => {
   const deleteProduct = await salesModel.deleteById(id);
   if (!deleteProduct.affectedRows) return { type: 404, message: 'Sale not found' };
-  return { type: null, message: ' ' };
+  return { type: null, message: '' };
 };
+
+const updateById = async (id, update) => {
+  if (!await validateProductId(update)) return { type: 404, message: 'Product not found' };
+  
+  const sales = await salesModel.findSaleById(id);
+  if (!sales.length) return { type: 404, message: 'Sale not found' };
+
+  await Promise.all(update
+    .map(async (e) => salesModel.updateById(id, e)));
+  return { type: null, message: { saleId: id, itemsUpdated: update } };
+}; 
 
 module.exports = {
   findAllSales,
   findSaleById,
   insertSale,
   deleteById,
+  updateById,
 };

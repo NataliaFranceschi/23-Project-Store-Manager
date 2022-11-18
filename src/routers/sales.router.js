@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get(
   '/',
-  salesController.listProducts,
+  salesController.listSales,
 );
 
 router.get(
@@ -26,5 +26,12 @@ router.delete(
   '/:id',
   salesController.deleteSale,
 );
+
+router.put(
+  '/:id',
+  validateProductId,
+  validateQuantity,
+  salesController.updateSale,
+); 
 
 module.exports = router;

@@ -1,10 +1,7 @@
 const salesService = require('../services/sales.service');
 
-const listProducts = async (_req, res) => {
-  const { type, message } = await salesService.findAllSales();
-
-  if (type) return res.status(type).json(message);
-
+const listSales = async (_req, res) => {
+  const { message } = await salesService.findAllSales();
   return res.status(200).json(message);
 };
 
@@ -35,9 +32,20 @@ const deleteSale = async (req, res) => {
   return res.status(204).end();
 };
 
+const updateSale = async (req, res) => {
+  const { id } = req.params;
+  const update = req.body;
+  const { type, message } = await salesService.updateById(id, update);
+
+  if (type) return res.status(type).json({ message });
+
+  return res.status(200).json(message);
+};
+
 module.exports = {
-  listProducts,
+  listSales,
   sale,
   createNewSale,
   deleteSale,
+  updateSale,
 };
