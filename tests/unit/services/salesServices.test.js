@@ -6,7 +6,7 @@ const productsModel = require('../../../src/models/products.model');
 const { sales, sale, newSales, id, updateSales} = require('../mocks/salesMocks')
 const { product } = require('../mocks/productsMocks')
 
-describe('Verificando service produto', function () {
+describe('Verificando service vendas', function () {
   it('Retorna a lista completa de vendas', async function () {
     sinon.stub(salesModel, 'findAllSales').resolves(sales);
 
